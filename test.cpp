@@ -8,7 +8,7 @@
 #elif __APPLE__
     #include <Accelerate/Accelerate.h> //Apple Optimized BLAS routines
 #else   
-    # error "Unknown Compiler"
+    # error "Unknown OS"
 #endif
 
 using namespace std;

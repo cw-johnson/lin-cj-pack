@@ -2,12 +2,14 @@
 #include <chrono> //Measure Timing
 #include <cstring> //memcpy instruction
 
+
+//Detect OS
 #if defined(__linux__)
     #include <cblas.h> //Generic BLAS Routines 
 #elif __APPLE__
     #include <Accelerate/Accelerate.h> //Apple Optimized BLAS routines
 #else   
-    # error "Unknown Compiler"
+    # error "Unknown OS"
 #endif
 
 using namespace std;
