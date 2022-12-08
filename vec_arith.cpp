@@ -35,3 +35,9 @@ CJVector operator-(const CJVector& lhs, const CJVector& rhs){
         res[i]=lhs[i]-rhs[i];
     return res;
 }
+
+CJVector operator*(const double &a, const CJVector& x){
+    CJVector res = x;
+    cblas_dscal(x.len, a, res.data, 1);
+    return res;
+}

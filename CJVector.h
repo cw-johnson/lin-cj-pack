@@ -30,6 +30,8 @@ using namespace std;
 #ifndef CJVECTOR_H
 #define CJVECTOR_H
 
+class CJVector;
+class CJMatrix; //Forward Declarations
 
 class CJVector{
     public:
@@ -83,12 +85,15 @@ class CJVector{
         }
 
 
-        //Math Functions
+        //Vector Arithmetic Functions
         friend double dot(const CJVector& lhs, const CJVector& rhs); //Dot Product O(n)
         friend double norm(const CJVector& arg); //Euclidean Norm O(n)
         friend CJVector operator+(const CJVector& lhs, const CJVector& rhs); //Elementwise Addition O(n)
         friend CJVector operator-(const CJVector& lhs, const CJVector& rhs); //Elementwise Subtraction O(n)
+        friend CJVector operator*(const double &a, const CJVector& x); //Scalar Multiplication
 
+        //Shared Arithmetic Functions
+        friend CJVector operator*(const CJMatrix &lhs, const CJVector &rhs);
 
         //Utility
         double& operator[] (const size_t& i){return data[i];}
@@ -120,8 +125,11 @@ class CJMatrix{
         CJMatrix() : len{0}, m{0}, n{0}, trans{false}, mtype{DENSE}, data{nullptr} {} 
         //Parameterized Constructor
         CJMatrix(size_t m, size_t n) : len{m*n}, m{m}, n{n}, trans{false}, mtype{DENSE}, data{new double[m*n]} {
-
+            zeros();
         } 
+        CJMatrix(size_t m, size_t n, MatrixType tt) : len{m*n}, m{m}, n{n}, trans{false}, mtype{tt}, data{new double[m*n]} {
+            zeros();
+        }         
         //Initializer List Constructor
         // CJMatrix(initializer_list<double> list) : len(list.size()), trans{false},  mtype{DENSE}, data{new double[len]} {
         //     size_t count = 0;
@@ -187,6 +195,12 @@ class CJMatrix{
         int calcIndex(const int row, const int col) const;
         void print();
         friend bool dimMatch(const CJMatrix& lhs, const CJMatrix& rhs);
+        //Matrix Arithmetic
+
+
+        //Shared Arithmetic
+        friend CJVector operator*(const CJMatrix &lhs, const CJVector &rhs);
+
 
         void setAll(double val);
         void zeros();
@@ -197,6 +211,8 @@ class CJMatrix{
         MatrixType mtype;
         double * data; 
 };
+
+
 
 #include "mat_core.cpp" //Matrix Utility Functions
 #include "vec_core.cpp" //Vector Utility Functions
@@ -211,8 +227,16 @@ class CJMatrix{
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+//Optimized Matrix-Vector Product (Support for Symmetric Matricies)
+CJVector operator*(const CJMatrix &lhs, const CJVector &rhs){
+    CJVector res(lhs.m);
+    if(lhs.mtype==SYMMETRIC)
+        cblas_dsymv(CblasRowMajor, CblasUpper, lhs.n, 1, lhs.data, lhs.n, rhs.data, 1, 0, res.data, 1);
+    else
+        cblas_dgemv(CblasRowMajor, CblasNoTrans, lhs.m, lhs.n, 1, lhs.data, lhs.m, rhs.data, 1, 0, res.data, 1);
+    return res;
 
-
+}
 
 
 

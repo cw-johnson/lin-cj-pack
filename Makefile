@@ -7,6 +7,21 @@ all: hw3
 os:
 	@echo $(OS_NAME)
 
+
+setup:
+ifeq ($(OS_NAME),darwin)
+	@echo $(OS_NAME)
+	xcode-select --install
+else 
+ifeq ($(OS_NAME),linux)
+	@echo $(OS_NAME)
+	sudo apt-get install libblas-dev liblapack-dev
+else
+	@echo $(OS_NAME)
+endif
+endif
+
+
 hw3: hw3.cpp
 ifeq ($(OS_NAME),darwin)
 	@echo $(OS_NAME)
