@@ -17,9 +17,19 @@
 #include <limits> //.. for infinity(), unit roundoff
 #include <algorithm> //.. for max()
 #include <string.h> //.. for Naming things
-#include <cblas.h> //.. Optimized Vector & Matrix Operations
 #include <vector> //Memory management
 #include "CJVector.h" //Legacy Matrix Implementation
+
+//Detect OS
+#if defined(__linux__)
+    #include <cblas.h> //Generic BLAS Routines 
+#elif __APPLE__
+    #include <Accelerate/Accelerate.h> //Apple Optimized BLAS routines
+#else   
+    # error "Unknown OS"
+#endif
+
+
 using namespace std;
 
 #define PRINT_W 25
