@@ -61,6 +61,46 @@ using namespace std;
 */
 
 
+//Unconstrained Quadratic Programming Problem 
+struct QP_Problem{
+    string name;
+    size_t n;
+    CJMatrix A; //A must be s.p.d
+    CJVector b;
+    double f(const CJVector &x){
+        double res = dot(x,A*x); //n^2 + n
+        res += dot(b,x); //2n
+        return res;
+    }
+    CJVector grad(const CJVector &x){
+        return A*x+b; //n^2 + n
+    }
+    CJVector r(const CJVector &x){
+        return b-A*x; //n^2 + n
+    }
+};
+
+
+//Steepest Descent Method Update
+//Operations: 2n^2 + 4n
+unsigned long int SD_Update(QP_Problem &qp, CJVector &xk){
+    CJVector pk = qp.r(xk); //n^2 + n
+    double ak = dot(pk,pk)/dot(pk,qp.A*pk); //n^2 + 2n 
+    xk = xk + ak*pk; //2n
+    unsigned long int n = qp.n;
+    return 2*pow(n,2) + 4*n;
+}
+
+//Richardson's Stationary Method Update
+//Operations: n^2 + 3n
+unsigned long int RS_Update(QP_Problem &qp, CJVector &xk, const double &ak){
+    CJVector pk = qp.r(xk); //n^2 + n;
+    xk = xk + ak*pk; //2n
+    unsigned long int n = qp.n;
+    return pow(n,2) + 3*n;
+}
+
+
 
 struct OptResult{
     string method = "N/A"; //Optimization Method
@@ -68,24 +108,29 @@ struct OptResult{
     unsigned int dimension = 0; //Problem in R^n
     string problem_ID = "N/A"; //Problem ID
     unsigned int num_iterations = 0; //Number of iterations until convergence
-    unsigned int num_l1_blas = 0; //# of level 1 BLAS routines used
-    unsigned int num_l2_blas = 0; //# of level 2 BLAS routines used
-    unsigned int num_l3_blas = 0; //# of level 3 BLAS routines used
+    unsigned long int num_ops = 0; //# of elementary operations used
+
 
     chrono::duration<double> ex_time = chrono::duration<double>::zero(); //Measured Execution Time
     friend ostream& operator<<(ostream& os, const OptResult &res){
-        os<< setw(PRINT_W) << left << "Method:"              << res.method               <<endl;
-        os<< setw(PRINT_W) << left << "Problem Type:"        << res.problem_type         <<endl;
-        os<< setw(PRINT_W) << left << "Problem Dimension:"   << res.dimension            <<endl;
-        os<< setw(PRINT_W) << left << "Problem ID:"          << res.problem_ID           <<endl;
-        os<< setw(PRINT_W) << left << "# Iterations:"        << res.num_iterations       <<endl;
-        os<< setw(PRINT_W) << left << "Execution Time (ms):" << 1000*res.ex_time.count() <<endl;
-        os<< setw(PRINT_W) << left << "# Level 1 BLAS:"      << res.num_l1_blas          <<endl;
-        os<< setw(PRINT_W) << left << "# Level 2 BLAS:"      << res.num_l2_blas          <<endl;
-        os<< setw(PRINT_W) << left << "# Level 3 BLAS:"      << res.num_l3_blas          <<endl;
+        os<< setw(PRINT_W) << left << "Method:"              << res.method              <<endl;
+        os<< setw(PRINT_W) << left << "Problem Type:"        << res.problem_type        <<endl;
+        os<< setw(PRINT_W) << left << "Problem Dimension:"   << res.dimension           <<endl;
+        os<< setw(PRINT_W) << left << "Problem ID:"          << res.problem_ID          <<endl;
+        os<< setw(PRINT_W) << left << "# Iterations:"        << res.num_iterations      <<endl;
+        os<< setw(PRINT_W) << left << "Execution Time (ms):" << 1000*res.ex_time.count()<<endl;
+        os<< setw(PRINT_W) << left << "# Operations:"        << res.num_ops             <<endl;
         return os;
     }
 };
+
+
+OptResult solve_QP(QP_Problem qp, CJVector &xko, string method){
+    unsigned int k=0; 
+    unsigned int kmax=
+
+}
+
 
 
 void testResultStruct(){
@@ -100,9 +145,7 @@ void testResultStruct(){
     test.dimension = 3;
     test.problem_ID = "#1, Convex";
     test.num_iterations = 100;
-    test.num_l1_blas = 1;
-    test.num_l2_blas = 2;
-    test.num_l3_blas = 3;
+    test.num_ops = 1;
     test.ex_time = ex_time;
     cout<<test<<endl;
 }
@@ -133,20 +176,16 @@ int main(){
     cout<<"December 7, 2022"<<endl;
     cout<<endl;
 
-    CJVector A = {2.0, 2.0};
-    A.print(); 
+    CJMatrix G(2,2,SYMMETRIC);
+    G(0,0)=16.0; G(0,1) = 0.0;
+    G(1,0)=0.0;  G(1,1) = 4.0;
 
-    CJVector B = {3.0, 3.0}; 
-    B.print();
+    CJVector c = {2.0, 2.0};
 
-    double d = dot(A,B);
-    cout<<d<<endl;
-
-    d = norm(A+B);
-    cout<<d<<endl;
-
-    CJVector D = A;
-    
-    testBLAS();
+    CJVector x = {1.5, 1.5};
+    QP_Problem q1 = {"Hello",2,G,c};
+    cout<<"q1.f()"<<q1.f(x)<<endl;
+    CJVector grad = q1.grad(x);
+    grad.print();
     return 0;
 }
