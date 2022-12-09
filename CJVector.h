@@ -202,7 +202,8 @@ class CJMatrix{
 
         //Matrix Arithmetic
         friend CJMatrix operator*(const double &a, const CJMatrix& x);
-        friend CJMatrix operator-(const CJMatrix& lhs, const CJMatrix& rhs);
+        friend CJMatrix operator*(const CJMatrix& lhs, const CJMatrix& rhs);
+        friend CJMatrix operator+(const CJMatrix& lhs, const CJMatrix& rhs);
         friend CJMatrix operator-(const CJMatrix& lhs, const CJMatrix& rhs);
         //Shared Arithmetic
         friend CJVector operator*(const CJMatrix &lhs, const CJVector &rhs);

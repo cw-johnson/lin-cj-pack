@@ -135,6 +135,12 @@ unsigned long int GS_Update(QP_Problem &qp, CJVector &xk, const double &ak){
 
 
 
+unsigned long int NTCG_Update(QP_Problem &qp, CJVector &xk, const double &ak){
+
+    return 0;
+}
+
+
 struct OptResult{
     string method = "N/A"; //Optimization Method
     string problem_type = "N/A"; //Problem Type
@@ -224,7 +230,7 @@ OptResult solve_QP(QP_Problem qp, CJVector &xko, string method, double eps){
         info.sigma = sigma;
     else if(method == "Richardson's Stationary")
         info.lambda_max = lambda_max;
-    info.problem_type = "Quadratic";
+    info.problem_type = "Quadratic s.p.d";
     info.dimension = qp.n;
     info.problem_ID = qp.name;
     info.num_iterations = k;
