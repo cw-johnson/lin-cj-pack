@@ -178,4 +178,16 @@ void CJMatrix::addRandomData(double min, double max)
   }
 }
 
+void CJMatrix::detectMatType(){
+  for(size_t i = 0; i<(m/2); i++)
+    for(size_t j = 0; j<(n/2); j++)
+      if(getelem(i,j) != getelem(j,i))
+        mtype = DENSE;
+  mtype = SYMMETRIC;
+}
+
+MatrixType CJMatrix::type(){
+  detectMatType();
+  return mtype;
+}
 
