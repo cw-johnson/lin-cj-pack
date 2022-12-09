@@ -62,6 +62,7 @@ struct QP_Problem{
 unsigned long int SD_Update(QP_Problem &qp, CJVector &xk){
     CJVector pk = qp.r(xk); //n^2 + n
     double ak = dot(pk,pk)/dot(pk,qp.A*pk); //n^2 + 2n 
+    //Take Step
     xk = xk + ak*pk; //2n
     unsigned long int n = qp.n;
     return 2*pow(n,2) + 4*n;
@@ -71,6 +72,7 @@ unsigned long int SD_Update(QP_Problem &qp, CJVector &xk){
 //Operations: n^2 + 3n
 unsigned long int RS_Update(QP_Problem &qp, CJVector &xk, const double &ak){
     CJVector pk = qp.r(xk); //n^2 + n;
+    //Take Step
     xk = xk + ak*pk; //2n
     unsigned long int n = qp.n;
     return pow(n,2) + 3*n;
@@ -81,6 +83,7 @@ unsigned long int RS_Update(QP_Problem &qp, CJVector &xk, const double &ak){
 unsigned long int SDS_Update(QP_Problem &qp, CJVector &xk, double &ak, const double &sigma){
     CJVector pk = qp.r(xk); //n^2 + n;
     ak = sigma*ak; //1
+    //Take Step
     xk = xk + ak*pk; //2n
     unsigned long int n = qp.n;
     return pow(n,2) + 3*n + 1;
@@ -92,6 +95,7 @@ unsigned long int CG_Update(QP_Problem &qp, CJVector &xk, CJVector &rk, CJVector
     CJVector vk = qp.A*dk; //n^2
     double uk = dot(dk,vk); //n
     double ak = sigk/uk; //1
+    //Take Step
     xk = xk + ak*dk; //2n
     rk = rk - ak*vk; //2n
     double sig_old = sigk;
@@ -103,12 +107,30 @@ unsigned long int CG_Update(QP_Problem &qp, CJVector &xk, CJVector &rk, CJVector
 }
 
 //Gauss-Southwell Method Update
-//Operations: n^2 + 3n
+//Operations: n^2 + 5n operations
 unsigned long int GS_Update(QP_Problem &qp, CJVector &xk, const double &ak){
-    CJVector pk = qp.r(xk); //n^2 + n;
-    xk = xk + ak*pk; //2n
+    CJVector rk = qp.r(xk); //n^2 + n;
+    double max = 0;
+    int maxi = 0;
+    for (int i =0; i<qp.n; i++){ //n
+        if (abs(rk[i])>max){
+        max = abs(rk[i]);
+        maxi = i;
+        }
+    }
+    CJVector ei = qp.A.slice(0,maxi,qp.n);
+    double dp = dot(ei,rk); //n
+
+    if (dp<0.0) //n
+        rk = -1.0*ei; 
+    else
+        rk = ei;
+
+    //Take Step
+    xk = xk + ak*rk; //n
+
     unsigned long int n = qp.n;
-    return pow(n,2) + 3*n;
+    return pow(n,2) + 5*n;
 }
 
 
@@ -242,32 +264,26 @@ int main(){
     cout<<"December 7, 2022"<<endl;
     cout<<endl;
 
-
-    CJMatrix G(2,2,SYMMETRIC);
-    G(0,0)=16.0; G(0,1) = 0.0;
-    G(1,0)=0.0;  G(1,1) = 4.0;
-
-    CJVector c = {2.0, 2.0};
-
-    CJVector x = {1.5, 1.5};
-
+    size_t n = 2;
+    CJMatrix G1(n,n,SYMMETRIC);
+    G1(0,0)=16.0; G1(0,1) = 0.0;
+    G1(1,0)=0.0;  G1(1,1) = 4.0;
+    CJVector c1 = {2.0, 2.0};
+    CJVector x1 = {1.5, 1.5};
     double eps = 1e-9;
 
-    QP_Problem q1 = {"Hello Optimization World",2,G,c};
+    QP_Problem q1 = {"Hello Optimization World",2,G1,c1};
 
-    OptResult test1 = solve_QP(q1, x, "Steepest Descent", eps);
-    OptResult test2 = solve_QP(q1, x, "Richardson's Stationary", eps);
-    OptResult test3 = solve_QP(q1, x, "SDslow", eps);
-    OptResult test4 = solve_QP(q1, x, "Conjugate Gradient", eps);
-
+    OptResult test1 = solve_QP(q1, x1, "Steepest Descent", eps);
+    OptResult test2 = solve_QP(q1, x1, "Richardson's Stationary", eps);
+    OptResult test3 = solve_QP(q1, x1, "SDslow", eps);
+    OptResult test4 = solve_QP(q1, x1, "Conjugate Gradient", eps);
+    OptResult test5 = solve_QP(q1, x1, "Gauss Southwell", eps);
     cout<<test1<<endl;
     cout<<test2<<endl;
     cout<<test3<<endl;
     cout<<test4<<endl;
-
-
-    CJMatrix G2 = 2*G;
-    G2.print();
+    cout<<test5<<endl;
     //Experiments
         //Compare ALL Methods on a few 2-D, 3-D, & Large-Scale Problems
 
