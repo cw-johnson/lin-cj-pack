@@ -37,6 +37,32 @@ const double &CJMatrix::getelem(const int &row, const int &col) const
 {
   return data[calcIndex(row, col)];
 }
+
+// //Get slice of matrix
+// CJMatrix CJMatrix::slice(int start_row, int start_col, int rows, int cols) const
+// {
+//   CJMatrix t(rows, cols);
+//   for (int i = 0; i < rows; i++)
+//   {
+//     for (int j = 0; j < cols; j++)
+//     {
+//       t(i, j) = this->getelem(i + start_row, j + start_col);
+//     }
+//   }
+//   return t;
+// }
+
+//Get row slice of matrix
+CJVector CJMatrix::slice(int start_row, int start_col, int rows) const
+{
+  CJVector t(rows);
+  for (int i = 0; i < rows; i++)
+  {
+      t[i] = this->getelem(i + start_row, start_col);
+  }
+  return t;
+}
+
 //Caculate element index
 int CJMatrix::calcIndex(const int row, const int col) const
 {
@@ -151,4 +177,5 @@ void CJMatrix::addRandomData(double min, double max)
     data[i] += myrand(re);
   }
 }
+
 

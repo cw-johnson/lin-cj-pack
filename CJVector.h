@@ -192,6 +192,8 @@ class CJMatrix{
         const double& operator() (const int& row,const int& col) const;
         double& getelem(const int& row, const int& col);
         const double& getelem(const int& row,const int& col) const;
+        //CJMatrix slice(int start_row, int start_col, int rows, int cols) const;
+        CJVector slice(int start_row, int start_col, int rows) const;
         //Utility
         int calcIndex(const int row, const int col) const;
         void print();

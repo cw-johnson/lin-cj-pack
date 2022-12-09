@@ -7,7 +7,7 @@ lin-cj-pack uses OS-specific CBLAS libraries. It currently supports...
 
 MacOS (darwin) using Apple's "Accelerate" Framework
 
-Linux using the generic CBLAS interface
+Linux using the generic CBLAS interface.
     You can install architecture specific backends, i.e OpenBLAS, Intel MKL, AMD AOCL-BLIS for increased performance
 
 
