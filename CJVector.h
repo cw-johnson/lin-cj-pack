@@ -196,19 +196,19 @@ class CJMatrix{
         int calcIndex(const int row, const int col) const;
         void print();
         friend bool dimMatch(const CJMatrix& lhs, const CJMatrix& rhs);
-
-
+        void setAll(double val);
+        void zeros();
+        void addRandomData(double min, double max);
+        void detectMatType();
+        MatrixType type();
+        
         //Matrix Arithmetic
         friend CJMatrix operator*(const double &a, const CJMatrix& x);
-        friend CJMatrix operator-(const CJMatrix& lhs, const CJMatrix& rhs);
+        friend CJMatrix operator+(const CJMatrix& lhs, const CJMatrix& rhs);
         friend CJMatrix operator-(const CJMatrix& lhs, const CJMatrix& rhs);
         //Shared Arithmetic
         friend CJVector operator*(const CJMatrix &lhs, const CJVector &rhs);
 
-
-        void setAll(double val);
-        void zeros();
-        void addRandomData(double min, double max);
     private:
         size_t len, m, n; //
         bool trans;
