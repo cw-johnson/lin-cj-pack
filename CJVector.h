@@ -99,6 +99,7 @@ class CJVector{
         double& operator[] (const size_t& i){return data[i];}
         const double& operator[](const size_t& i) const {return data[i];}
         void print();
+        friend ostream& operator<<(ostream& os, const CJVector &res);
         void setAll(double val);
         void zeros();
         void addRandomData(double min, double max);
@@ -195,9 +196,12 @@ class CJMatrix{
         int calcIndex(const int row, const int col) const;
         void print();
         friend bool dimMatch(const CJMatrix& lhs, const CJMatrix& rhs);
+
+
         //Matrix Arithmetic
-
-
+        friend CJMatrix operator*(const double &a, const CJMatrix& x);
+        friend CJMatrix operator-(const CJMatrix& lhs, const CJMatrix& rhs);
+        friend CJMatrix operator-(const CJMatrix& lhs, const CJMatrix& rhs);
         //Shared Arithmetic
         friend CJVector operator*(const CJMatrix &lhs, const CJVector &rhs);
 

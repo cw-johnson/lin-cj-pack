@@ -1,7 +1,7 @@
 #include "CJVector.h"
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//--------------------------------------VECTOR carithmetic functions-----------------------------------------------//
+//--------------------------------------VECTOR arithmetic functions-----------------------------------------------//
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //Math Functions
@@ -16,7 +16,7 @@ double norm(const CJVector& arg){
     return cblas_dnrm2(arg.len,arg.data,1);
 }
 
-//Elementwise Addition
+//Vector Addition
 CJVector operator+(const CJVector& lhs, const CJVector& rhs){
     if(!dimMatch(lhs,rhs))
         return CJVector();
@@ -26,7 +26,7 @@ CJVector operator+(const CJVector& lhs, const CJVector& rhs){
     return res;
 }
 
-//Elementwise Subtraction
+//Vector Subtraction
 CJVector operator-(const CJVector& lhs, const CJVector& rhs){
     if(!dimMatch(lhs,rhs))
         return CJVector();
@@ -36,6 +36,7 @@ CJVector operator-(const CJVector& lhs, const CJVector& rhs){
     return res;
 }
 
+//Scalar-Vector Multiplication
 CJVector operator*(const double &a, const CJVector& x){
     CJVector res = x;
     cblas_dscal(x.len, a, res.data, 1);

@@ -8,10 +8,17 @@
 //Print
 void CJVector::print(){
     for(size_t i=0;i<len;i++)
-        cout<<data[i]<<'\t';
+        cout<<data[i]<<"  ";
     cout<<endl;
 }
 
+//Output Stream Operator Overload
+ostream& operator<<(ostream& os, const CJVector &res){
+    for(size_t i=0;i<res.len;i++)
+        os<<res.data[i]<<"  ";
+    os<<endl;
+    return os;
+}
 //Set All to Value
 void CJVector::setAll(double val){
     for(size_t i=0; i<len; i++){
