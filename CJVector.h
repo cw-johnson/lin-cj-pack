@@ -206,10 +206,7 @@ class CJMatrix{
         
         //Matrix Arithmetic
         friend CJMatrix operator*(const double &a, const CJMatrix& x);
-<<<<<<< HEAD
         friend CJMatrix operator*(const CJMatrix& lhs, const CJMatrix& rhs);
-=======
->>>>>>> b3f88613fa6052302c864edb232bcd53862e3cdf
         friend CJMatrix operator+(const CJMatrix& lhs, const CJMatrix& rhs);
         friend CJMatrix operator-(const CJMatrix& lhs, const CJMatrix& rhs);
         //Shared Arithmetic
