@@ -1,9 +1,8 @@
-# lin-cj-pack
-Linear Algebra Package by CJ
+# Graded HW2
 
 
 # Target Architectures
-lin-cj-pack uses OS-specific CBLAS libraries. It currently supports...
+uses OS-specific CBLAS libraries. It currently supports...
 
 MacOS (darwin) using Apple's "Accelerate" Framework
 
@@ -24,7 +23,7 @@ sudo apt-get install libblas-dev liblapack-dev
 
 Alternatively, run
 '''
-
+sudo make setup
 '''
 # Compilation
 Navigate to the repository directory, and type "make" to compile all demonstration programs

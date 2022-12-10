@@ -167,8 +167,11 @@ double backtracking_wolfe(QP_Problem &qp, CJVector &xk, CJVector &pk, double a0,
         lhs1 = qp.f(xk + a*pk); //Sufficient Decrease
         rhs1 = qp.f(xk) + (c1*a)*dot(gradient,pk); 
 
-        lhs2 = dot(qp.grad(xk + a*pk),pk);
-        rhs2 = c2*dot(qp.grad(xk),pk);
+        // lhs2 = dot(qp.grad(xk + a*pk),pk);
+        // rhs2 = c2*dot(qp.grad(xk),pk);
+
+        lhs2 = abs(dot(qp.grad(xk + a*pk),pk));
+        rhs2 = (c2*dot(qp.grad(xk),pk));
         //cout << lhs << ' ' << rhs <<endl;
         a = beta*a;
         m++;
@@ -268,12 +271,12 @@ OptResult solve_QP(QP_Problem &qp, CJVector &xko, string method, double eps){
     unsigned int op_ctr = 0;    
 
     unsigned int k=0; 
-    unsigned int kmax=1000; //Max no Iterations
+    unsigned int kmax=10000; //Max no Iterations
     CJVector xk = xko;
 
     double lambda_max = 0.1; //For Richardsons Stationary
     double a_rs = 1/lambda_max; //For Richardsons Stationary
-    double sigma = 0.5; //For SDslow
+    double sigma = 0.75; //For SDslow
     double a_sds = 1; //For SDslow
 
     CJVector r_cg = qp.r(xk); //Initial Calculations for CG
@@ -371,11 +374,13 @@ void ex_1_all(){
     OptResult test3 = solve_QP(q, x, "SDslow", eps);
     OptResult test4 = solve_QP(q, x, "Conjugate Gradient", eps);
     OptResult test5 = solve_QP(q, x, "Gauss Southwell", eps);
+    OptResult test6 = solve_QP(q, x, "BFGS", eps);
     cout<<test1<<endl;
     cout<<test2<<endl;
     cout<<test3<<endl;
     cout<<test4<<endl;
     cout<<test5<<endl;
+    cout<<test6<<endl;
 }
 
 //Example #2, n=3, Quadratic
@@ -404,16 +409,21 @@ void ex_2_all(){
     cout<<test5<<endl;
 }
 
-void ex_2_all(){
+void ex_3_all(){
     size_t n = 10;
     CJMatrix G(n,n,SYMMETRIC);
-    for (int i =0; i<n;i++)
-        G(i,i) = 5*sqrt(i)
-    
-    CJVector x = {1.5, 1.5, 1.5};
+    CJVector c(n);
+    for (int i =0; i<n;i++){
+        G(i,i) = 5*sqrt(i);
+        c[i] = 100/i;
+    }
+    CJVector x(n);
+
+
+
     double eps = 1e-9;
 
-    QP_Problem q = {"3D Convex s.p.d Quadratic",n,G,c};
+    QP_Problem q = {"n=10 Convex s.p.d Quadratic",n,G,c};
 
     OptResult test1 = solve_QP(q, x,"Steepest Descent", eps);
     OptResult test2 = solve_QP(q, x, "Richardson's Stationary", eps);
@@ -439,6 +449,7 @@ int main(){
 
     ex_1_all();
     ex_2_all();
+    ex_3_all();
     //Experiments
         //Compare ALL Methods on a few 2-D, 3-D, & Large-Scale Problems
 
