@@ -414,7 +414,7 @@ void ex_3_all(){
     CJMatrix G(n,n,SYMMETRIC);
     CJVector c(n);
     for (int i =0; i<n;i++){
-        G(i,i) = 5*sqrt(i);
+        G(i,i) = 5*sqrt(i+1);
         c[i] = 100/i;
     }
     CJVector x(n);
