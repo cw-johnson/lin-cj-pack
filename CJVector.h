@@ -94,6 +94,7 @@ class CJVector{
 
         //Shared Arithmetic Functions
         friend CJVector operator*(const CJMatrix &lhs, const CJVector &rhs);
+        friend CJMatrix outer(const CJVector& lhs, const CJVector& rhs); //Outer Product
 
         //Utility
         double& operator[] (const size_t& i){return data[i];}
@@ -200,6 +201,7 @@ class CJMatrix{
         friend bool dimMatch(const CJMatrix& lhs, const CJMatrix& rhs);
         void setAll(double val);
         void zeros();
+        void makeIdentity();
         void addRandomData(double min, double max);
         void detectMatType();
         MatrixType type();
@@ -209,8 +211,11 @@ class CJMatrix{
         friend CJMatrix operator*(const CJMatrix& lhs, const CJMatrix& rhs);
         friend CJMatrix operator+(const CJMatrix& lhs, const CJMatrix& rhs);
         friend CJMatrix operator-(const CJMatrix& lhs, const CJMatrix& rhs);
+        friend double m2norm_2(CJMatrix &G);
+        friend double m2norm_3(CJMatrix &G);
         //Shared Arithmetic
         friend CJVector operator*(const CJMatrix &lhs, const CJVector &rhs);
+        friend CJMatrix outer(const CJVector& lhs, const CJVector& rhs); //Outer Product
 
     private:
         size_t len, m, n; //
@@ -237,7 +242,9 @@ class CJMatrix{
 //Optimized Matrix-Vector Product (Support for Symmetric Matricies)
 CJVector operator*(const CJMatrix &lhs, const CJVector &rhs){
     CJVector res(lhs.m);
-    if(lhs.mtype==SYMMETRIC)
+    if(lhs.n != rhs.len)
+        cout<<lhs.n<<' '<<rhs.len;
+    else if(lhs.mtype==SYMMETRIC)
         cblas_dsymv(CblasRowMajor, CblasUpper, lhs.n, 1, lhs.data, lhs.n, rhs.data, 1, 0, res.data, 1);
     else
         cblas_dgemv(CblasRowMajor, CblasNoTrans, lhs.m, lhs.n, 1, lhs.data, lhs.m, rhs.data, 1, 0, res.data, 1);

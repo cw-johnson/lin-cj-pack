@@ -352,6 +352,9 @@ void testResultStruct(){
     cout<<test<<endl;
 }
 
+
+
+//Example #1, n=2, Quadratic
 void ex_1_all(){
     size_t n = 2;
     CJMatrix G(n,n,SYMMETRIC);
@@ -359,7 +362,7 @@ void ex_1_all(){
     G(1,0)=0.0;  G(1,1) = 4.0;
     CJVector c = {2.0, 2.0};
     CJVector x = {1.5, 1.5};
-    double eps = 1e-12;
+    double eps = 1e-9;
 
     QP_Problem q = {"Hello Optimization World",n,G,c};
 
@@ -368,14 +371,14 @@ void ex_1_all(){
     OptResult test3 = solve_QP(q, x, "SDslow", eps);
     OptResult test4 = solve_QP(q, x, "Conjugate Gradient", eps);
     OptResult test5 = solve_QP(q, x, "Gauss Southwell", eps);
-    OptResult test6 = solve_QP(q, x, "BFGS", eps);
     cout<<test1<<endl;
     cout<<test2<<endl;
     cout<<test3<<endl;
     cout<<test4<<endl;
     cout<<test5<<endl;
-    cout<<test6<<endl;
 }
+
+//Example #2, n=3, Quadratic
 
 void ex_2_all(){
     size_t n = 3;
@@ -383,7 +386,7 @@ void ex_2_all(){
     G(0,0)=16.0; G(0,1) = 0.0; G(0,2) = 0.0;
     G(1,0)=0.0;  G(1,1) = 4.0; G(1,2) = 0.0;
     G(2,0)=0.0;  G(2,1) = 0.0; G(2,2) = 6.0;
-    CJVector c = {0, 0, 0};
+    CJVector c = {1, 2, 3};
     CJVector x = {1.5, 1.5, 1.5};
     double eps = 1e-9;
 
@@ -394,13 +397,34 @@ void ex_2_all(){
     OptResult test3 = solve_QP(q, x, "SDslow", eps);
     OptResult test4 = solve_QP(q, x, "Conjugate Gradient", eps);
     OptResult test5 = solve_QP(q, x, "Gauss Southwell", eps);
-    OptResult test6 = solve_QP(q, x, "BFGS", eps);
     cout<<test1<<endl;
     cout<<test2<<endl;
     cout<<test3<<endl;
     cout<<test4<<endl;
     cout<<test5<<endl;
-    cout<<test6<<endl;
+}
+
+void ex_2_all(){
+    size_t n = 10;
+    CJMatrix G(n,n,SYMMETRIC);
+    for (int i =0; i<n;i++)
+        G(i,i) = 5*sqrt(i)
+    
+    CJVector x = {1.5, 1.5, 1.5};
+    double eps = 1e-9;
+
+    QP_Problem q = {"3D Convex s.p.d Quadratic",n,G,c};
+
+    OptResult test1 = solve_QP(q, x,"Steepest Descent", eps);
+    OptResult test2 = solve_QP(q, x, "Richardson's Stationary", eps);
+    OptResult test3 = solve_QP(q, x, "SDslow", eps);
+    OptResult test4 = solve_QP(q, x, "Conjugate Gradient", eps);
+    OptResult test5 = solve_QP(q, x, "Gauss Southwell", eps);
+    cout<<test1<<endl;
+    cout<<test2<<endl;
+    cout<<test3<<endl;
+    cout<<test4<<endl;
+    cout<<test5<<endl;
 }
 
 int main(){
@@ -414,7 +438,7 @@ int main(){
     cout<<endl;
 
     ex_1_all();
-    //ex_2_all();
+    ex_2_all();
     //Experiments
         //Compare ALL Methods on a few 2-D, 3-D, & Large-Scale Problems
 

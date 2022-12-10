@@ -11,6 +11,12 @@ double dot(const CJVector& lhs, const CJVector& rhs){
     return cblas_ddot(lhs.len,lhs.data,1,rhs.data,1);
 }
 
+CJMatrix outer(const CJVector& lhs, const CJVector& rhs){
+    CJMatrix res(lhs.len, rhs.len);
+    cblas_dger(CblasRowMajor, lhs.len, rhs.len, 1, lhs.data, 1, rhs.data, 1, res.data, rhs.len);
+    return res;
+}
+
 //Euclidean Norm
 double norm(const CJVector& arg){
     return cblas_dnrm2(arg.len,arg.data,1);

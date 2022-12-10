@@ -161,7 +161,13 @@ void CJMatrix::setAll(double val){
         data[i] = val;
     }
 }
-
+void CJMatrix::makeIdentity(){
+  zeros();
+  mtype = SYMMETRIC;
+  if (m==n)
+    for(int i=0;i<m;i++)
+      getelem(i,i) = 1.0;
+}
 //Set All to 0
 void CJMatrix::zeros(){
     setAll(0.0);
