@@ -415,7 +415,7 @@ void ex_3_all(){
     CJVector c(n);
     for (int i =0; i<n;i++){
         G(i,i) = 5*sqrt(i+1);
-        c[i] = 100/i;
+        c[i] = 100/(i+1);
     }
     CJVector x(n);
 
